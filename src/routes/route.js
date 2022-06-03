@@ -14,7 +14,7 @@ router.post('/register', registerUser)
 router.post('/login', userLogin) 
 
 //==Get User
-router.get('/user/:userId/profile',authentication, getProfileData) 
+router.get('/user/:userId/profile',authentication, authorization, getProfileData) /////////
 
 //==Updating User Document
 router.put('/user/:userId/profile', authentication,authorization, updateUserDetails) 
