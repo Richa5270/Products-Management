@@ -67,71 +67,78 @@ const createProduct = async (req, res) => {
 
 //---GET PRODUCT (all or filter)
 const getProduct = async function (req, res){
-  try {
-        const query = req.query
-    //==No filter:sending product list==//
-    if(!query){
-        let GetRecod = await productModel.find({ isDeleted: false })
-        if (GetRecod.length == 0) return res.status(404).send({ status: false, message: "product not found" }) 
-
-        if (Object.keys(query).length === 0) return res.status(200).send({ status: true, message: 'Products list', data: GetRecod })}
-
-    //==with filter==//
-        let { priceSort , name, size, priceGreaterThan, priceLessThan } = query
-        let filter = {isDeleted: false}
-
-    //==checking available filters ==//
-        if (isValid(name)) {
-            filter.title = name.toUpperCase();
-        }
-
-        if (isValid(priceSort )){
-            if(priceSort == "ascending") priceSort = 1
-            if(priceSort == "decending") priceSort = -1
-        }
-        
-        if(isValid(priceGreaterThan)){
-            filter.price = {$gte:priceGreaterThan}
-        }
-        
-        if(isValid(priceLessThan)){
-            filter.price = { $lte:priceLessThan }
-        }
-        
-        if(isValid(size)){
-            const availableSizesArr = size.toUpperCase().trim().split(',').map(size => size.trim());
-            filter.availableSizes = {$in:availableSizesArr} // using $in so that if any one size matches it will show the document.
-        }
-   
-    //==if price range given, checking and sending details==//  
-        if(priceGreaterThan && priceLessThan){
-        const product = await productModel.find({isDeleted: false,
-        $or: [
-        { title:  filter.title },
-        { availableSizes :  filter.availableSizes },
-        {price:{$gte:priceGreaterThan,$lte:priceLessThan}}
-        ]}).sort({price : priceSort})
-
-        if (product.length === 0) {
-            res.status(404).send({ status: false, message: 'No products found' })
-            return
-         }
-         res.status(200).send({ status: true, message: 'Products list', data: product })
-    
-        }else{
-    //==checking available filters & sending details ==//
-        const product = await productModel.find(filter).sort({price : priceSort})
-
-        if (product.length === 0) return res.status(404).send({ status: false, message: 'No products found' })
-            
-        return res.status(200).send({ status: true, message: 'Products list', data: product })
-
-         }
-
-    } catch (error) {
-    res.status(500).send({ status: false, message: error.message });
-}
-}
+    try {
+          const query = req.query
+      //==No filter:sending product list==//
+      if(!query){
+          let GetRecod = await productModel.find({ isDeleted: false })
+          if (GetRecod.length == 0) return res.status(404).send({ status: false, message: "product not found" }) 
+  
+          if (Object.keys(query).length === 0) return res.status(200).send({ status: true, message: 'Products list', data: GetRecod })}
+  
+      //==with filter==//
+          let { priceSort , name, size, priceGreaterThan, priceLessThan } = query
+          let filter = {isDeleted: false}
+  
+      //==checking available filters ==//
+          if (isValid(name)) {
+              filter.title = name.toUpperCase();
+          }
+  
+          if (isValid(priceSort )){
+              if(priceSort == "ascending") priceSort = 1
+              if(priceSort == "decending") priceSort = -1
+          }
+          
+          if(isValid(priceGreaterThan)){
+              filter.price = {$gte:priceGreaterThan}
+          }
+          
+          if(isValid(priceLessThan)){
+              filter.price = { $lte:priceLessThan }
+          }
+          
+          if(isValid(size)){
+              var availableSizesArr = size.toUpperCase().trim().split(',')
+              for (let i = 0; i < availableSizesArr.length; i++) {
+                  if (!(["S", "XS", "M", "X", "L", "XXL", "XL"]).includes(availableSizesArr[i])) {
+                      return res.status(400).send({ status: false, message: `Sizes should be ${["S", "XS", "M", "X", "L", "XXL", "XL"]}` })
+                  }
+  
+  
+              }
+              filter.availableSizes = {$in:availableSizesArr} // using $in so that if any one size matches it will show the document.
+          }
+     
+      //==if price range given, checking and sending details==//  
+          if(priceGreaterThan && priceLessThan){
+          const product = await productModel.find({isDeleted: false,
+          $or: [
+          { title:  filter.title },
+          { availableSizes :  filter.availableSizes },
+          {price:{$gte:priceGreaterThan,$lte:priceLessThan}}
+          ]}).sort({price : priceSort})
+  
+          if (product.length === 0) {
+              res.status(404).send({ status: false, message: 'No products found' })
+              return
+           }
+           res.status(200).send({ status: true, message: 'Products list', data: product })
+      
+          }else{
+      //==checking available filters & sending details ==//
+          const product = await productModel.find(filter).sort({price : priceSort})
+  
+          if (product.length === 0) return res.status(404).send({ status: false, message: 'No products found' })
+              
+          return res.status(200).send({ status: true, message: 'Products list', data: product })
+  
+           }
+  
+      } catch (error) {
+      res.status(500).send({ status: false, message: error.message });
+  }
+  }
 
 //*******************************************************************//
 

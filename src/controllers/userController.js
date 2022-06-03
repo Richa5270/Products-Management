@@ -242,12 +242,6 @@ const getProfileData = async function (req, res) {
              updateData.address = findAddress.address
         }
 
-    
-    //==checking and validating file(image)==//
-        if (formData == "") { return res.status(400).send({ status: false, message: "image is not valid" }) }
-        else if (formData) {
-            if(!isValidFile(formData[0].originalname))  return res.status(400).send({ status: false, message: "Please provide image only" })
-        }
 
     //==updating user details==//    
          const updateDetails = await userModel.findByIdAndUpdate({ _id: userId }, updateData, { new: true })
