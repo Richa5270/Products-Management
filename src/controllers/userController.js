@@ -59,7 +59,7 @@ const registerUser = async function (req, res) {
         profileImage = uploadedFileURL
     }
     else{
-        res.status(400).send({ msg: "No file found" })
+        res.status(400).send({ msg: "file is required." })
     }
 
 //==creating user==//    

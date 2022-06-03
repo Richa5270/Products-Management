@@ -100,7 +100,7 @@ const getProduct = async function (req, res) {
 
         if (findProducts.length == 0) return res.status(404).send({ status: false, message: "products not found or may be deleted" })
 
-        return res.status(200).send({ status: true, count: findProducts.length, message: "products details", data: findProducts })
+        return res.status(200).send({ status: true, message: "products list", data: findProducts })
     }
     catch (err) {
         return res.status(500).send({ status: false, error: err.message })
