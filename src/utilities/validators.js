@@ -90,8 +90,13 @@ const isValidStatus = (status) => {
     let correctStatus = ['pending', 'completed', 'cancled']
     return (correctStatus.includes(status))
   }
+//************************************************************************ */
+  const isValidSize = (Size) => {
+    let correctSize = ["S", "XS", "M", "X", "L", "XXL", "XL"]
+    return (correctSize.includes(Size))
+  }
   
 
-    module.exports = { isValidStatus, isValidRequestBody,isValidNum,isValidFile, isValid, isValidObjectId, isValidEmail, isValidMobile, isValidName, isValidPassword,isValidPrice,isValidEnum }
+    module.exports = { isValidStatus, isValidSize, isValidRequestBody,isValidNum,isValidFile, isValid, isValidObjectId, isValidEmail, isValidMobile, isValidName, isValidPassword,isValidPrice,isValidEnum }
 
 //*****************************************************************//

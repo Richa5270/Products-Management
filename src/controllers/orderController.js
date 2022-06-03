@@ -13,19 +13,37 @@ const createOrder = async function (req, res) {
         const { cartId } = req.body
 
         if (!isValidObjectId(userId)) return res.status(400).send({ status: false, message: "invalid user Id.." })
+
         const user = await userModel.findOne({ _id: userId })
         if (!user) return res.status(404).send({ status: false, message: "user not found" })
+
         if (!isValid(cartId)) return res.status(400).send({ status: false, message: "cart Id required" })
+
         if (!isValidObjectId(cartId)) return res.status(400).send({ status: false, message: "invalid cart Id.." })
+
         const cart = await cartModel.findOne({ _id: cartId }).lean().select({ updatedAt: 0, createdAt: 0, __v: 0, _id: 0 })
+
         if (!cart) return res.status(404).send({ status: false, message: "cart not found to place an order.." })
+
         if (cart.items.length == 0) return res.status(404).send({ status: false, message: "Cart is empty... First add Product to Cart." })
+        cart.totalQuantity = cart.items.map(x => x.quantity).reduce((x, y) => x + y) // map giving array of quantity
 
-        
+        let order = await orderModel.create(cart)
 
-        cart.totalQuantity = cart.items.map(x => x.quantity).reduce((x, y) => x + y)
-        const orderCreated = await orderModel.create(cart)
-        res.status(201).send({ status: true, message: "order created successfully", data: orderCreated })
+        //==getting only required keys and sending in response==//
+        let result ={
+        _id : order._id,
+        userId : order.userId,
+        items : order.items,
+        totalPrice : order.totalPrice,
+        totalItems : order.totalItems,
+        totalQuantity : order.totalQuantity,
+        cancellable : order.cancellable,
+        status : order.status,
+        createdAt : order.createdAt,
+        updatedAt : order.updatedAt
+    }
+        res.status(201).send({ status: true, message: "order created successfully", data: result })
 
         await cartModel.findOneAndUpdate({ userId: userId }, { $set: { items: [], totalItems: 0, totalPrice: 0 } }, { new: true })
 

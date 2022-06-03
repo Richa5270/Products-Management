@@ -4,7 +4,7 @@ const { authentication,authorization } = require("../middleware/auth")
 const { registerUser, userLogin,getProfileData,updateUserDetails } = require("../controllers/userController")
 const {createProduct,getProduct,getProductById,updateProductDetails,deleteProduct} = require("../controllers/productController")
 const {createCart,removeProduct,getCart,deleteCart} = require("../controllers/cartController")
-
+const {createOrder, updateOrder} = require('../controllers/orderController')
 
 //---USER APIS---//
 //==Register User
@@ -14,7 +14,7 @@ router.post('/register', registerUser)
 router.post('/login', userLogin) 
 
 //==Get User
-router.get('/user/:userId/profile',authentication, getProfileData) 
+router.get('/user/:userId/profile',authentication, authorization, getProfileData) /////////
 
 //==Updating User Document
 router.put('/user/:userId/profile', authentication,authorization, updateUserDetails) 
@@ -34,7 +34,7 @@ router.get('/products/:productId', getProductById)
 //==Update Product Document
 router.put('/products/:productId', updateProductDetails)
 
-//==dDlete Product Document
+//==Delete Product Document
 router.delete('/products/:productId', deleteProduct)
 
 //*******************************************************************//
@@ -47,16 +47,21 @@ router.post('/users/:userId/cart',authentication,authorization,createCart)
 router.put('/users/:userId/cart',authentication,authorization,removeProduct)
 
 //==Get Cart
-router.get('/users/:userId/cart',getCart)
+router.get('/users/:userId/cart',authentication,authorization,getCart)
 
 //==Delete Cart
-router.delete('/users/:userId/cart',deleteCart)
+router.delete('/users/:userId/cart',authentication,authorization,deleteCart)
+
 
 //*******************************************************************//
-const { createOrder, updateOrder} = require('../controllers/orderController')
 
-router.post('/users/:userId/orders', createOrder)
-router.put('/users/:userId/orders', updateOrder)
+//---Order APIS---//
+//==Create Order
+router.post('/users/:userId/orders',authentication,authorization,createOrder)
+
+//==Update Order
+router.put('/users/:userId/orders',authentication,authorization,updateOrder)
+
 
 //**********************************************************************
 module.exports = router  

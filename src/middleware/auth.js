@@ -29,7 +29,7 @@ const authorization = async function (req, res, next) {
         let tokenId = req.userId;
         let user = req.params.userId
 
-        if (!isValidObjectId(user)) return res.status(400).send({status:false,message:`Book id ${user} is invalid`})
+        if (!isValidObjectId(user)) return res.status(400).send({status:false,message:`User id ${user} is invalid`})
 
         const findUser= await userModel.findOne({_id:user});
         if (!findUser) return res.status(404).send({ status: false, message: 'User not found' })
