@@ -52,13 +52,10 @@ const createCart = async function(req, res){
       let number = 0
       for(let i = 0; i<presentCart.items.length;i++){
         if(presentCart.items[i].productId == productId){
-         
           index = i
-          console.log("hii",i);
           product = presentCart.items[i].productId.toString()
           number = presentCart.items[i].quantity
         } else{
-          console.log(i,"Hello");
           newData.push(presentCart.items[i])
         }
       }
@@ -91,7 +88,6 @@ const createCart = async function(req, res){
           let updateCart = await cartModel.findOneAndUpdate(
           {_id : presentCart._id},
           {
-          userId : data.userId,
           $set : {items: data.items}, 
           totalPrice : data.totalPrice,
           totalItems : data.totalItems

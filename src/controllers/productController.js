@@ -4,7 +4,7 @@ const { isValidRequestBody, isValidNum,isValidSize, isValid, isValidPrice, isVal
 
 
 //---CREATE PRODUCT
-const createProduct = async (req, res) => {
+const createProduct = async  (req, res) => {
     try {
         //==validating request body==//
         let data = req.body;

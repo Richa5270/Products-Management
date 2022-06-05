@@ -1,5 +1,4 @@
 # projectXYZ
-#Thorium
 
 ## Project - Products Management
 
